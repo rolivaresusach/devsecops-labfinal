@@ -98,7 +98,13 @@ stages:
               downloadPath: '$(Pipeline.Workspace)'
             displayName: Descarga Jar
 
-          - script: 'mkdir -p target; mv $(Pipeline.Workspace)/appJar/target/ target/; chmod -R 555 target'
+          - script: |
+              ls -l
+              mkdir -p target; mv $(Pipeline.Workspace)/appJar/target/ target/; chmod -R 555 target
+              pwd
+              ls -l $(Pipeline.Workspace)
+              ls -l
+              ls -l target 
             displayName: Se mueve JAR a carpeta raiz
 
           - task: Docker@2
