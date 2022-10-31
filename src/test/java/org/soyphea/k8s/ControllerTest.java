@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(Controller.class)
-public class ControllerTest {
+class ControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -38,7 +38,7 @@ public class ControllerTest {
 
     @Test
     @DisplayName("When calling the correct endpoint should be ok.")
-    public void test_ok() throws Exception {
+    void test_ok() throws Exception {
         mockMvc.perform(get("/k8s/Dara")).andExpect(MockMvcResultMatchers.status().isOk());
     }
 
