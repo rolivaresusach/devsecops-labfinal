@@ -73,21 +73,23 @@ stages:
     jobs:
       - job: DependencyCheck
         steps:
-                  - task: DownloadBuildArtifacts@0
-                    inputs:
-                      buildType: 'current'
-                      downloadType: 'single'
-                      artifactName: 'appJar'
-                      downloadPath: '$(Pipeline.Workspace)'
-                    displayName: Descarga Jar
-                  - task: dependency-check-build-task@6
-                    inputs:
-                      projectName: 'spring-boot-kubernetes'
-                      scanPath: '$(Pipeline.Workspace)/appJar/target/spring-boot-kubernetes-0.0.1-SNAPSHOT.jar'
-                      format: 'ALL'
-                    displayName: SCA
+          - task: DownloadBuildArtifacts@0
+            inputs:
+                buildType: 'current'
+                downloadType: 'single'
+                artifactName: 'appJar'
+                downloadPath: '$(Pipeline.Workspace)'
+            displayName: Descarga Jar
+          - task: dependency-check-build-task@6
+            inputs:
+              projectName: 'spring-boot-kubernetes'
+              scanPath: '$(Pipeline.Workspace)/appJar/target/spring-boot-kubernetes-0.0.1-SNAPSHOT.jar'
+              format: 'ALL'
+              failOnCVSS: '7'
+            displayName: SCA
 
-  - stage: Deploy
+  - stage: ContainerSecurity
+    displayName: Container Security
     jobs:
       - job: buildimage
         displayName: Build Image
