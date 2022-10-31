@@ -36,12 +36,11 @@ public class Controller {
         log.info("Got the request with name:{}", name);
         if (name != null)
             this.noInjected = name;
-        return String.format("Hi %s- I am ConfigMap running in side k8s with value %s", name, userConfig);
+        return String.format("Hi %s- I am ConfigMap running in side k8s with value %s", this.noInjected, userConfig);
     }
 
     @GetMapping("/users/{contain_name}")
     public List<User> getUsersByContainName(@PathVariable("contain_name") String containName) {
         return userService.getUser(containName);
     }
-
 }
