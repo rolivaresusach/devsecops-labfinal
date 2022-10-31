@@ -38,10 +38,10 @@ stages:
         steps:
           - task: SonarCloudPrepare@1
             inputs:
-              SonarCloud: 'SonarDevSecOps'
-              organization: 'cl-usach-diplomados-rolivares'
-              projectKey: 'devsecops-foundation-rolivares'
-              projectName: 'devsecops-foundation-rolivares'
+              SonarCloud: 'Sonar'
+              organization: 'rolivares-diplomados'
+              projectKey: 'rolivares-diplomados'
+              projectName: 'rolivares-diplomados'
             displayName: 'Preparing Sonarqube Environment'
 
           - task: Gradle@3
