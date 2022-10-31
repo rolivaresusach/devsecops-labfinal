@@ -28,9 +28,13 @@ public class Controller {
     }
     @GetMapping("/k8s/{name}")
     public String k8sGreeting(@PathVariable("name") String name) {
-
-        log.info("Got the request with name:{}", name);
-        return String.format("Hi %s- I am ConfigMap running in side k8s with value %s", name,userConfig);
+        try {            
+            log.info("Got the request with name:{}", name);
+            return String.format("Hi %s- I am ConfigMap running in side k8s with value %s", name,userConfig);
+        } catch (Exception e) {
+            // Forzar vulnerabilidad             
+        }
+        return "Error forzado para Sonar";
     }
 
     @GetMapping("/users/{contain_name}")
