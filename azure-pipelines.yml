@@ -23,6 +23,7 @@ stages:
               sourceFolder: '$(Build.SourcesDirectory)'
               contents: |
                 **/target/*.jar
+                **/surefire-reports/*.xml
               targetFolder: '$(Build.ArtifactStagingDirectory)'
 
         - task: PublishBuildArtifacts@1
