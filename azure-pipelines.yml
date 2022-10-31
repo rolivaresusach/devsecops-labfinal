@@ -31,3 +31,38 @@ stages:
               pathToPublish: '$(Build.ArtifactStagingDirectory)'
               artifactName: appJar
               publishLocation: 'Container'
+
+  - stage: Test
+    jobs:
+      - job: Sonar
+        workspace:
+          clean: all
+        displayName: Code Review
+        steps:
+          - task: SonarCloudPrepare@1
+            inputs:
+              SonarCloud: 'Sonar'
+              organization: 'rolivaresusach'
+              projectKey: 'devsecops-labfinal'
+              projectName: 'devsecops-labfinal'
+            displayName: 'Preparing Sonarqube Environment'
+
+          - task: Maven@4
+            inputs:
+              mavenPomFile: 'pom.xml'
+              publishJUnitResults: true
+              testResultsFiles: '**/surefire-reports/TEST-*.xml'
+              codeCoverageToolOption: 'JaCoCo'
+              javaHomeOption: 'JDKVersion'
+              mavenVersionOption: 'Default'
+              mavenAuthenticateFeed: false
+              effectivePomSkip: false
+              sonarQubeRunAnalysis: true
+              isJacocoCoverageReportXML: true
+              sqMavenPluginVersionChoice: 'latest'
+
+
+          - task: SonarCloudPublish@1
+            inputs:
+              pollingTimeoutSec: '300'
+            displayName: 'Publish Analysis Results'
