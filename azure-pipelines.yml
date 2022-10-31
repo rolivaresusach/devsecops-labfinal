@@ -90,7 +90,7 @@ stages:
               ls -l $(Pipeline.Workspace)
               nhigh=$(grep ",HIGH," $(Pipeline.Workspace)/TestResults/dependency-check/dependency-check-report.csv | wc -l)
               echo $nhigh "Vulnerabilidades detectadas HIGH en Dependency-check"
-              if [ $nhigh -gt 100 ];
+              if ($nhigh > 0);
               then 
                 echo "Se quiebra el pipeline con dependency check detectada" $nhigh " > 0 HIGH Vulnerabilities"
                 exit 1;
