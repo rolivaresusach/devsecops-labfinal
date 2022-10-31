@@ -23,24 +23,21 @@ public class Controller {
     @Autowired
     private UserService userService;
 
-    public Controller(){
+    private String password = "UnPasswordHardcoded";
+
+    public Controller() {
         log.info("Initialised Bean.");
     }
+
     @GetMapping("/k8s/{name}")
     public String k8sGreeting(@PathVariable("name") String name) {
-        try {            
-            log.info("Got the request with name:{}", name);
-            return String.format("Hi %s- I am ConfigMap running in side k8s with value %s", name,userConfig);
-        } catch (Exception e) {
-            // Forzar vulnerabilidad             
-        }
-        return "Error forzado para Sonar";
+        log.info("Got the request with name:{}" + password, name);
+        return String.format("Hi %s- I am ConfigMap running in side k8s with value %s", name, userConfig);
     }
 
     @GetMapping("/users/{contain_name}")
-    public List<User> getUsersByContainName(@PathVariable("contain_name") String containName){
+    public List<User> getUsersByContainName(@PathVariable("contain_name") String containName) {
         return userService.getUser(containName);
     }
-
 
 }
