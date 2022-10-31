@@ -6,32 +6,33 @@ stages:
       - job: build
         displayName: 'Build'
         steps:
-          - task: Maven@3
-            inputs:
-              mavenPomFile: 'pom.xml'
-              publishJUnitResults: false
-              javaHomeOption: 'JDKVersion'
-              mavenVersionOption: 'Default'
-              mavenAuthenticateFeed: false
-              effectivePomSkip: false
-              sonarQubeRunAnalysis: false
+        - task: Maven@3
+          inputs:
+            mavenPomFile: 'pom.xml'
+            publishJUnitResults: false
+            javaHomeOption: 'JDKVersion'
+            mavenVersionOption: 'Default'
+            mavenAuthenticateFeed: false
+            effectivePomSkip: false
+            sonarQubeRunAnalysis: false
 
-          - task: CopyFiles@2
-            inputs:
+        - task: CopyFiles@2
+          inputs:
               sourceFolder: '$(Build.SourcesDirectory)'
               contents: |
-                **/build/libs/*.jar
+                **/target/*.jar
+                **/surefire-reports/*.xml
               targetFolder: '$(Build.ArtifactStagingDirectory)'
 
-          - task: PublishBuildArtifacts@1
-            inputs:
+        - task: PublishBuildArtifacts@1
+          inputs:
               pathToPublish: '$(Build.ArtifactStagingDirectory)'
               artifactName: appJar
               publishLocation: 'Container'
 
   - stage: Test
     jobs:
-      - job: sonar
+      - job: Sonar
         workspace:
           clean: all
         displayName: Code Review
@@ -39,27 +40,36 @@ stages:
           - task: SonarCloudPrepare@1
             inputs:
               SonarCloud: 'Sonar'
-              organization: 'rolivares-diplomados'
-              projectKey: 'rolivares-diplomados'
-              projectName: 'rolivares-diplomados'
+              organization: 'rolivaresusach'
+              projectKey: 'devsecops-labfinal'
+              projectName: 'devsecops-labfinal'
             displayName: 'Preparing Sonarqube Environment'
 
-          - task: Gradle@3
+          - task: Maven@4
             inputs:
-              gradleWrapperFile: 'gradlew'
-              tasks: 'sonarqube'
+              mavenPomFile: 'pom.xml'
+              publishJUnitResults: true
+              testResultsFiles: '**/surefire-reports/TEST-*.xml'
+              codeCoverageToolOption: 'JaCoCo'
               javaHomeOption: 'JDKVersion'
+              mavenVersionOption: 'Default'
+              mavenAuthenticateFeed: false
+              effectivePomSkip: false
               sonarQubeRunAnalysis: true
-              sqGradlePluginVersionChoice: 'specify'
-              sonarQubeGradlePluginVersion: '3.3'
-            displayName: 'Analyze current Branch'
+              isJacocoCoverageReportXML: true
+              sqMavenPluginVersionChoice: 'latest'
 
           - task: SonarCloudPublish@1
             inputs:
               pollingTimeoutSec: '300'
             displayName: 'Publish Analysis Results'
 
-      - job: sca
+          - task: sonarcloud-buildbreaker@2
+            inputs:
+              SonarCloud: 'Sonar'
+              organization: 'rolivaresusach'
+
+      - job: SCA
         steps:
           - task: DownloadBuildArtifacts@0
             inputs:
@@ -68,10 +78,9 @@ stages:
               artifactName: 'appJar'
               downloadPath: '$(Pipeline.Workspace)'
             displayName: Descarga Jar
-
           - task: dependency-check-build-task@6
             inputs:
-              projectName: 'pet-clinic'
-              scanPath: '$(Pipeline.Workspace)/appJar/build/libs/spring-petclinic-2.6.0.jar'
+              projectName: 'spring-boot-kubernetes'
+              scanPath: '$(Pipeline.Workspace)/appJar/target/spring-boot-kubernetes-0.0.1-SNAPSHOT.jar'
               format: 'HTML'
             displayName: SCA
