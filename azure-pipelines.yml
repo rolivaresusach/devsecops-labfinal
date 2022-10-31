@@ -68,3 +68,19 @@ stages:
             inputs:
               SonarCloud: 'Sonar'
               organization: 'rolivaresusach'
+
+      - job: SCA
+        steps:
+          - task: DownloadBuildArtifacts@0
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'appJar'
+              downloadPath: '$(Pipeline.Workspace)'
+            displayName: Descarga Jar
+          - task: dependency-check-build-task@6
+            inputs:
+              projectName: 'spring-boot-kubernetes'
+              scanPath: '$(Pipeline.Workspace)/appJar/target/spring-boot-kubernetes-0.0.1-SNAPSHOT.jar'
+              format: 'HTML'
+            displayName: SCA
