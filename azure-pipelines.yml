@@ -9,9 +9,7 @@ stages:
         - task: Maven@3
           inputs:
             mavenPomFile: 'pom.xml'
-            publishJUnitResults: true
-            testResultsFiles: '**/surefire-reports/TEST-*.xml'
-            testRunTitle: 'Tests'
+            publishJUnitResults: false
             javaHomeOption: 'JDKVersion'
             mavenVersionOption: 'Default'
             mavenAuthenticateFeed: false
