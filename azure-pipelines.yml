@@ -85,6 +85,8 @@ stages:
               format: 'HTML, CSV'
             displayName: SCA
           - script: |
+              pwd
+              ls -l
               nhigh=$(grep ",HIGH," $(Build.SourcesDirectory)/dependency/dependency-check-report.csv | wc -l)
               echo $nhigh "Vulnerabilidades detectadas HIGH en Dependency-check"
               if [ $nhigh -gt 100 ];
