@@ -6,15 +6,15 @@ stages:
       - job: build
         displayName: 'Build'
         steps:
-          - task: Gradle@3
+          - task: Maven@3
             inputs:
-              gradleWrapperFile: 'gradlew'
-              tasks: 'build'
-              publishJUnitResults: true
-              testResultsFiles: '**/TEST-*.xml'
+              mavenPomFile: 'pom.xml'
+              publishJUnitResults: false
               javaHomeOption: 'JDKVersion'
+              mavenVersionOption: 'Default'
+              mavenAuthenticateFeed: false
+              effectivePomSkip: false
               sonarQubeRunAnalysis: false
-              spotBugsAnalysis: false
 
           - task: CopyFiles@2
             inputs:
