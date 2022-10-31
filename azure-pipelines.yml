@@ -99,11 +99,7 @@ stages:
             displayName: Descarga Jar
 
           - script: |
-              ls -l
-              mkdir -p target; mv $(Pipeline.Workspace)/appJar/target/ target/; chmod -R 555 target
-              pwd
-              ls -l $(Pipeline.Workspace)
-              ls -l
+              mkdir -p target; mv $(Pipeline.Workspace)/appJar/target/*.jar target/; chmod -R 555 target
               ls -l target 
             displayName: Se mueve JAR a carpeta raiz
 
