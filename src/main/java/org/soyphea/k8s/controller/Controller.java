@@ -25,7 +25,7 @@ public class Controller {
     @Autowired
     private UserService userService;
 
-    private String password = "UnPasswordHardcoded";
+    private String noInjected = "NonInjected";
 
     public Controller() {
         log.info("Initialised Bean.");
@@ -33,9 +33,9 @@ public class Controller {
 
     @GetMapping("/k8s/{name}")
     public String k8sGreeting(@PathVariable("name") String name) throws Exception {
-        log.info("Got the request with name:{}" + password, name);
-        if (name == null)
-            throw new Exception("Error forzado");
+        log.info("Got the request with name:{}", name);
+        if (name != null)
+            this.noInjected = name;
         return String.format("Hi %s- I am ConfigMap running in side k8s with value %s", name, userConfig);
     }
 
