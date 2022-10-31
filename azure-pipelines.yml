@@ -82,7 +82,8 @@ stages:
             inputs:
               projectName: 'spring-boot-kubernetes'
               scanPath: '$(Pipeline.Workspace)/appJar/target/spring-boot-kubernetes-0.0.1-SNAPSHOT.jar'
-              format: 'HTML, CSV'
+              format: 'ALL'
+              failOnCVSS: '70'
             displayName: SCA
           - script: |
               pwd
