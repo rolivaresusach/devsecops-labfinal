@@ -82,9 +82,12 @@ stages:
             inputs:
               projectName: 'spring-boot-kubernetes'
               scanPath: '$(Pipeline.Workspace)/appJar/target/spring-boot-kubernetes-0.0.1-SNAPSHOT.jar'
-              format: 'HTML, CSV'
+              format: 'ALL'
+              failOnCVSS: '70'
             displayName: SCA
           - script: |
+              pwd
+              ls -l
               nhigh=$(grep ",HIGH," $(Build.SourcesDirectory)/dependency/dependency-check-report.csv | wc -l)
               echo $nhigh "Vulnerabilidades detectadas HIGH en Dependency-check"
               if [ $nhigh -gt 100 ];
