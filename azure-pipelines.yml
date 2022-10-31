@@ -6,75 +6,37 @@ stages:
       - job: build
         displayName: 'Build'
         steps:
-          - task: Maven@3
-            inputs:
-              mavenPomFile: 'pom.xml'
-              publishJUnitResults: false
-              javaHomeOption: 'JDKVersion'
-              mavenVersionOption: 'Default'
-              mavenAuthenticateFeed: false
-              effectivePomSkip: false
-              sonarQubeRunAnalysis: false
-              sqMavenPluginVersionChoice: 'latest'
-              failWhenBugsFound: true
-            displayName: SonarCloud Analysis
-
-          - task: CopyFiles@2
-            inputs:
-              sourceFolder: '$(Build.SourcesDirectory)'
-              contents: |
-                **/build/libs/*.jar
-              targetFolder: '$(Build.ArtifactStagingDirectory)'
-
-          - task: PublishBuildArtifacts@1
-            inputs:
-              pathToPublish: '$(Build.ArtifactStagingDirectory)'
-              artifactName: appJar
-              publishLocation: 'Container'
-
-  - stage: Test
-    jobs:
-      - job: sonar
-        workspace:
-          clean: all
-        displayName: Code Review
-        steps:
-          - task: SonarCloudPrepare@1
-            inputs:
-              SonarCloud: 'Sonar'
-              organization: 'rolivares-diplomados'
-              projectKey: 'rolivares-diplomados'
-              projectName: 'rolivares-diplomados'
-            displayName: 'Preparing Sonarqube Environment'
-
-          - task: Gradle@3
-            inputs:
-              gradleWrapperFile: 'gradlew'
-              tasks: 'sonarqube'
-              javaHomeOption: 'JDKVersion'
-              sonarQubeRunAnalysis: true
-              sqGradlePluginVersionChoice: 'specify'
-              sonarQubeGradlePluginVersion: '3.3'
-            displayName: 'Analyze current Branch'
-
-          - task: SonarCloudPublish@1
-            inputs:
-              pollingTimeoutSec: '300'
-            displayName: 'Publish Analysis Results'
-
-      - job: sca
-        steps:
-          - task: DownloadBuildArtifacts@0
-            inputs:
-              buildType: 'current'
-              downloadType: 'single'
-              artifactName: 'appJar'
-              downloadPath: '$(Pipeline.Workspace)'
-            displayName: Descarga Jar
-
-          - task: dependency-check-build-task@6
-            inputs:
-              projectName: 'pet-clinic'
-              scanPath: '$(Pipeline.Workspace)/appJar/build/libs/spring-petclinic-2.6.0.jar'
-              format: 'HTML'
-            displayName: SCA
+        - task: Maven@3
+          inputs:
+            mavenPomFile: 'pom.xml'
+            publishJUnitResults: false
+            javaHomeOption: 'JDKVersion'
+            mavenVersionOption: 'Default'
+            mavenAuthenticateFeed: false
+            effectivePomSkip: false
+            sonarQubeRunAnalysis: false
+        - task: SonarCloudPrepare@1
+          inputs:
+            SonarCloud: 'sonar'
+            organization: 'rolivaresusach'
+            scannerMode: 'Other'
+        - task: Maven@3
+          inputs:
+            mavenPomFile: 'pom.xml'
+            publishJUnitResults: false
+            javaHomeOption: 'JDKVersion'
+            mavenVersionOption: 'Default'
+            mavenAuthenticateFeed: false
+            effectivePomSkip: false
+            sonarQubeRunAnalysis: true
+            sqMavenPluginVersionChoice: 'latest'
+            failWhenBugsFound: true
+          displayName: SonarCloud Analysis
+            
+        - task: SonarCloudPublish@1
+          inputs:
+            pollingTimeoutSec: '300'
+        - task: sonarcloud-buildbreaker@2
+          inputs:
+            SonarCloud: 'sonar'
+            organization: 'rolivaresusach'
